@@ -1,6 +1,7 @@
 package u.can.i.up.dl.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
@@ -124,6 +125,7 @@ public class ViewUtils {
         mProgressBar = createProcessBar();
         mArrayView = createArrowView();
         mTextView = createTextView();
+
     }
 
     private ImageView createControlView(){
@@ -246,14 +248,14 @@ public class ViewUtils {
     }
 
     /**@param tmpActivity 指定播放视频所在的界面
-     * @param mLayout 在指定界面中生成动态布局
+     * @param ll 在指定界面中生成动态布局
      * @param path 视频的本地路径
      * @param playType 播放的形式，默认布局还是居中布局等等。
      * @see u.can.i.up.dl.utils.Variables
      *
      * 在指定页面中生成唯一动态布局，并且在该布局中播放视频
      * */
-    public void playVideoInVideoView(Activity tmpActivity, LinearLayout mLayout, String path, int playType){
+    public void playVideoInVideoView(Activity tmpActivity, LinearLayout ll, String path, int playType){
         mActivity = tmpActivity;
         mPlayType = playType;
         createVideoView(mLayout);
@@ -272,6 +274,9 @@ public class ViewUtils {
         mActivity = tmpActivity;
         mPlayType = playType;
         mLayout = ml;
+        mAudioManager = (AudioManager)mActivity.getSystemService(Context.AUDIO_SERVICE);
+        mMaxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+
         createVideoView(mLayout);
         playVideo(path);
     }
@@ -363,7 +368,6 @@ public class ViewUtils {
                 if (mVolume < 0)
                     mVolume = 0;
             }
-
             float index = (percent * mMaxVolume) + mVolume;
             if (index > mMaxVolume) {
                 index = mMaxVolume;
