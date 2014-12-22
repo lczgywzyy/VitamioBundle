@@ -95,7 +95,6 @@ public class ViewUtils {
             }
         });
         mVideoView.setOnTouchListener(new VideoViewTouchListener(mActivity));
-
 //        mGestureDetector = new GestureDetector(mActivity, new GestureListenerImpl());
     }
 
