@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -12,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import u.can.i.up.dl.utils.Variables;
+import u.can.i.up.dl.utils.audio.AudioUtils;
 import u.can.i.up.dl.utils.video.VideoUtils;
 
 /**
@@ -29,7 +32,14 @@ public class MyMainActivity extends Activity {
 
         /*在当前的Activity中的布局(Layout)中，创建一个新的VideoView，并且把视频加载到指定的VideoView中；
         * */
-        VideoUtils.getInstance().playVideoInVideoView(this, (RelativeLayout) findViewById(R.id.mytest), "/sdcard/Movies/test1.mp4", Variables.VIDEO_CENTER_WITHOUT_CONTROLLER);
+//        VideoUtils.getInstance().playVideoInVideoView(this, (RelativeLayout) findViewById(R.id.mytest), "/sdcard/Movies/test1.mp4", Variables.VIDEO_CENTER_WITHOUT_CONTROLLER);
+        AudioUtils.getInstance().playAudio(this, "/sdcard/Music/1.mp3");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AudioUtils.getInstance().stopAudio();
     }
 
     /*TODO ！！！旋转屏幕的消息还有BUG，稍后解决。
@@ -77,5 +87,25 @@ public class MyMainActivity extends Activity {
         final float scale = getResources().getDisplayMetrics().density;
         return (int) (padding_in_dp * scale + 0.5f);
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_my_image, menu);
+        return true;
+    }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //AudioUtils.getInstance().seekAfterwards(100000);
+        AudioUtils.getInstance().seekBackwards(100000);
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

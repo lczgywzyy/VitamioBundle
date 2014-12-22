@@ -40,8 +40,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MyImageActivity"
-            android:label="@string/title_activity_my_image" >
+            android:name=".MyImageActivity" android:label="@string/title_activity_my_image" >
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.DEFAULT" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
     </application>
 
