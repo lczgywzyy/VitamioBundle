@@ -1,7 +1,6 @@
-package u.can.i.up.dl.utils;
+package u.can.i.up.dl.utils.video;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,13 +17,13 @@ public class VideoViewTouchListener implements View.OnTouchListener{
     }
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if(ViewUtils.getInstance().isScrollScreen()){
+        if(VideoUtils.getInstance().isScrollScreen()){
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_CANCEL:
 //                Log.i("VideoViewTouchListener", "ACTION_CANCEL");
                 case MotionEvent.ACTION_UP:
 //                Log.i("VideoViewTouchListener", "ACTION_UP");
-                ViewUtils.getInstance().endGesture();
+                    VideoUtils.getInstance().endGesture();
                     break;
             }
         }

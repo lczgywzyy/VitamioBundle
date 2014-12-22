@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import u.can.i.up.dl.utils.Variables;
-import u.can.i.up.dl.utils.ViewUtils;
+import u.can.i.up.dl.utils.video.VideoUtils;
 
 /**
  * Created by lczgywzyy on 2014/12/17.
@@ -27,7 +27,7 @@ public class MyMainActivity extends Activity {
 
         /*在当前的Activity中的布局(Layout)中，创建一个新的VideoView，并且把视频加载到指定的VideoView中；
         * */
-        ViewUtils.getInstance().playVideoInVideoView(this, (RelativeLayout) findViewById(R.id.mytest), "/sdcard/Movies/1.mp4", Variables.PLAY_TYPE_CENTER_WITH_CONTROLLER);
+        VideoUtils.getInstance().playVideoInVideoView(this, (RelativeLayout) findViewById(R.id.mytest), "/sdcard/Movies/1.mp4", Variables.VIDEO_CENTER_WITH_CONTROLLER);
     }
     /*TODO ！！！旋转屏幕的消息还有BUG，稍后解决。
     * */

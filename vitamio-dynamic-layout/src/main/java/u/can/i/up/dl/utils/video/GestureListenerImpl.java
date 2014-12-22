@@ -1,11 +1,8 @@
-package u.can.i.up.dl.utils;
+package u.can.i.up.dl.utils.video;
 
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 /**
  * Created by lczgywzyy on 2014/12/19.
@@ -30,12 +27,12 @@ public class GestureListenerImpl  extends GestureDetector.SimpleOnGestureListene
      */
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
-        ViewUtils.getInstance().SingleTapConfirmed();
+        VideoUtils.getInstance().SingleTapConfirmed();
         return true;
     }
 
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        ViewUtils.getInstance().Fling(e1, e2, velocityX, velocityY);
+        VideoUtils.getInstance().Fling(e1, e2, velocityX, velocityY);
         return true;
     }
 
@@ -44,7 +41,7 @@ public class GestureListenerImpl  extends GestureDetector.SimpleOnGestureListene
      */
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        ViewUtils.getInstance().ScrollScreen(e1, e2, distanceX, distanceY);
+        VideoUtils.getInstance().ScrollScreen(e1, e2, distanceX, distanceY);
         return true;
     }
 
@@ -54,7 +51,7 @@ public class GestureListenerImpl  extends GestureDetector.SimpleOnGestureListene
      * @param percent
      */
     private void onVolumeSlide(boolean isUp, float percent) {
-        ViewUtils.getInstance().VolumeSlide(isUp, percent);
+        VideoUtils.getInstance().VolumeSlide(isUp, percent);
     }
 
     /**
@@ -63,7 +60,7 @@ public class GestureListenerImpl  extends GestureDetector.SimpleOnGestureListene
      * @param percent
      */
     private void onBrightnessSlide(boolean isUp, float percent) {
-        ViewUtils.getInstance().BrightnessSlide(isUp, percent);
+        VideoUtils.getInstance().BrightnessSlide(isUp, percent);
     }
 
 }

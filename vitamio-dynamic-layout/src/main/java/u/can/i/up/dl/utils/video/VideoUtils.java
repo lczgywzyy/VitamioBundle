@@ -1,4 +1,4 @@
-package u.can.i.up.dl.utils;
+package u.can.i.up.dl.utils.video;
 
 import android.app.Activity;
 import android.content.Context;
@@ -23,13 +23,14 @@ import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.widget.MediaController;
 import io.vov.vitamio.widget.VideoView;
 import u.can.i.up.dl.R;
+import u.can.i.up.dl.utils.Variables;
 
 /**
  * Created by lczgywzyy on 2014/12/18.
  */
-public class ViewUtils {
+public class VideoUtils {
 
-    private static final ViewUtils mViewUtils = new ViewUtils();
+    private static final VideoUtils mViewUtils = new VideoUtils();
 
     private VideoView mVideoView = null;
     private int mPlayType = -1;
@@ -59,12 +60,12 @@ public class ViewUtils {
         }
     };
 
-    private ViewUtils(){}
+    private VideoUtils(){}
 
     /**@param
      * @return mViewUtils的实例
      * */
-    public static ViewUtils getInstance(){
+    public static VideoUtils getInstance(){
         return mViewUtils;
     }
     /**@param
@@ -230,13 +231,13 @@ public class ViewUtils {
         int screenWidth = metric.widthPixels;     // 屏幕宽度（像素）
 
         switch (mPlayType){
-            case Variables.PLAY_TYPE_NAIVE_WITH_CONTROLLER:
+            case Variables.VIDEO_NAIVE_WITH_CONTROLLER:
                 mVideoView.setMediaController(new MediaController(mActivity));
-            case Variables.PLAY_TYPE_NAIVE_WITHOUT_CONTROLLER:
+            case Variables.VIDEO_NAIVE_WITHOUT_CONTROLLER:
                 break;
-            case Variables.PLAY_TYPE_CENTER_WITH_CONTROLLER:
+            case Variables.VIDEO_CENTER_WITH_CONTROLLER:
                 mVideoView.setMediaController(new MediaController(mActivity));
-            case Variables.PLAY_TYPE_CENTER_WITHOUT_CONTROLLER:
+            case Variables.VIDEO_CENTER_WITHOUT_CONTROLLER:
 //                Log.i("=====VideoHeight======", "" + videoHight);
 //                Log.i("=====VideoWidth======", "" + videoWidth);
 //                Log.i("=====ScreenHeight======", "" + screenHeight);
@@ -252,7 +253,7 @@ public class ViewUtils {
     }
 
     /**@param path 视频的本地路径
-     * @see u.can.i.up.dl.utils.Variables;
+     * @see Variables;
      * */
     private void playVideo(String path){
         mVideoView.setVideoPath(path);
@@ -265,14 +266,14 @@ public class ViewUtils {
      * 在指定页面中生成唯一动态布局，并且在该布局中播放视频
      * */
     public void playVideoInVideoView(Activity tmpActivity, LinearLayout mLayout, String path){
-        playVideoInVideoView(tmpActivity, mLayout, path, Variables.PLAY_TYPE_NAIVE_WITH_CONTROLLER);
+        playVideoInVideoView(tmpActivity, mLayout, path, Variables.VIDEO_NAIVE_WITH_CONTROLLER);
     }
 
     /**@param tmpActivity 指定播放视频所在的界面
      * @param ll 在指定界面中生成动态布局
      * @param path 视频的本地路径
      * @param playType 播放的形式，默认布局还是居中布局等等。
-     * @see u.can.i.up.dl.utils.Variables
+     * @see Variables
      *
      * 在指定页面中生成唯一动态布局，并且在该布局中播放视频
      * */
@@ -287,7 +288,7 @@ public class ViewUtils {
      * @param ml 在指定界面中生成动态布局
      * @param path 视频的本地路径
      * @param playType 播放的形式，默认布局还是居中布局等等。
-     * @see u.can.i.up.dl.utils.Variables
+     * @see Variables
      *
      * 在指定页面中生成唯一动态布局，并且在该布局中播放视频
      * */
