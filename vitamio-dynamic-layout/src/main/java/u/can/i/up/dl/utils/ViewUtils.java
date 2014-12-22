@@ -5,11 +5,9 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Layout;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,8 +44,8 @@ public class ViewUtils {
     private int mVolume = -1;//当前声音
     private float mBrightness = -1f;//当前亮度
 
-    public boolean isScollScreen = false;
-    //    private GestureDetector mGestureDetector;
+    private boolean mScrollScreenFlag = false;
+
     private Handler mDismissHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -63,17 +61,39 @@ public class ViewUtils {
 
     private ViewUtils(){}
 
+    /**@param
+     * @return mViewUtils的实例
+     * */
     public static ViewUtils getInstance(){
         return mViewUtils;
     }
+    /**@param
+     * @return mVideoView实例
+     * */
     public VideoView getVideoView(){
         return getInstance().mVideoView;
     }
+
+    /**@param
+     * @return mControlView
+     * 返回ImageView类型的mControlView
+     * */
     public ImageView getControlView(){
         return getInstance().mControlView;
     }
 
-    /**@param mLayout 在指定界面中生成动态布局
+    /**@return mScrollScreenFlag
+     * 判断是不是划屏操作；
+     * 中间变量！
+     * */
+    public boolean isScrollScreen(){
+        return mScrollScreenFlag;
+    }
+    private void setScrollScreenFlag(boolean flag){
+        mScrollScreenFlag = flag;
+    }
+    /**@param mLayout 在指定LinearLayout界面中生成动态布局
+     * @deprecated
      * */
     private void createVideoView(LinearLayout mLayout){
         if (!LibsChecker.checkVitamioLibs(mActivity))
@@ -99,7 +119,7 @@ public class ViewUtils {
 //        mGestureDetector = new GestureDetector(mActivity, new GestureListenerImpl());
     }
 
-    /**@param mLayout 在指定界面中生成动态布局
+    /**@param mLayout 在指定RelativeLayout界面中生成动态布局
      * */
     private void createVideoView(RelativeLayout mLayout){
         if (!LibsChecker.checkVitamioLibs(mActivity))
@@ -120,14 +140,18 @@ public class ViewUtils {
                 updateVideoView();
             }
         });
+        baseInit();
+    }
+
+    /*相关变量的初始化
+    * */
+    private void baseInit(){
         mVideoView.setOnTouchListener(new VideoViewTouchListener(mActivity));
         mControlView = createControlView();
         mProgressBar = createProcessBar();
         mArrayView = createArrowView();
         mTextView = createTextView();
-
     }
-
     private ImageView createControlView(){
         ImageView controlView = new ImageView(mActivity);
         RelativeLayout.LayoutParams viewLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -159,7 +183,6 @@ public class ViewUtils {
         Log.i("createProcessBar", "add progress bar : " + progressBar.getId());
         return progressBar;
     }
-
     private ImageView createArrowView() {
         /** init control view */
         ImageView arrowView = new ImageView(mActivity);
@@ -178,7 +201,6 @@ public class ViewUtils {
         Log.i("createArrowView", "add arrow view : " + arrowView.getId());
         return arrowView;
     }
-
     private TextView createTextView() {
         /** init text view*/
         TextView textView = new TextView(mActivity);
@@ -199,7 +221,6 @@ public class ViewUtils {
         Log.i("createTextView", "add text view : " + textView.getId());
         return textView;
     }
-
     private void updateVideoView(){
         int videoHight = mVideoView.getVideoHeight();
         int videoWidth = mVideoView.getVideoWidth();
@@ -280,9 +301,10 @@ public class ViewUtils {
         createVideoView(mLayout);
         playVideo(path);
     }
-
+    /** GestureListenerImpl实例的单击处理函数；
+     * */
     public void SingleTapConfirmed(){
-        isScollScreen = false;
+        setScrollScreenFlag(false);
         mControlView.setImageResource(R.drawable.video_play_1);
         if (mVideoView.isPlaying()) {
             Log.i("item id ", "" + mControlView.getId());
@@ -294,9 +316,10 @@ public class ViewUtils {
         }
         Log.i("GestureListenerImpl", "onSingleTapConfirmed");
     }
-
+    /** GestureListenerImpl实例的滑动处理函数；
+     * */
     public void Fling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY){
-        isScollScreen = true;
+        setScrollScreenFlag(true);
         long addTime = 15000;
         long deleteTime = 15000;
         int mOldX = (int) e1.getX(), mOldY = (int) e1.getY();
@@ -324,7 +347,8 @@ public class ViewUtils {
         }
         Log.i("Fling", "action : fling");
     }
-
+    /** GestureListenerImpl实例的消息处理函数；
+     * */
     public void endGesture() {
         Log.i("endGesture", "end gesture");
         mVolume = -1;
@@ -334,10 +358,12 @@ public class ViewUtils {
         mDismissHandler.removeMessages(0);
         mDismissHandler.sendEmptyMessageDelayed(0, 1000);
         //   seekVedioRequest = 0;
-        isScollScreen = false;
+        setScrollScreenFlag(false);
     }
+    /** GestureListenerImpl实例的划屏处理函数；
+     * */
     public void ScrollScreen(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY){
-        isScollScreen = true;
+        setScrollScreenFlag(true);
         float mOldX = e1.getX(), mOldY = e1.getY();
         int mNewX = (int) e2.getX(), mNewY = (int) e2.getY();
         //   float rawDistanceX = mOldX - mNewX;
@@ -351,6 +377,8 @@ public class ViewUtils {
             BrightnessSlide(distanceY > 0, (rawDistanceY) / windowHeight);
         }
     }
+    /** GestureListenerImpl实例的声音处理函数；
+     * */
     public void VolumeSlide(boolean isUp, float percent) {
         if ((isUp && percent > 0) || (!isUp && percent < 0)) {
             if (percent > 0) {
@@ -381,8 +409,7 @@ public class ViewUtils {
         }
     }
 
-    /**
-     * 滑动改变亮度
+    /** GestureListenerImpl实例的亮度处理函数；
      *
      * @param isUp
      * @param percent

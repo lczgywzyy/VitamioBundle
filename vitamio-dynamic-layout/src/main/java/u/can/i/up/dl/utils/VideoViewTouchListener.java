@@ -18,7 +18,7 @@ public class VideoViewTouchListener implements View.OnTouchListener{
     }
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if(ViewUtils.getInstance().isScollScreen){
+        if(ViewUtils.getInstance().isScrollScreen()){
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_CANCEL:
 //                Log.i("VideoViewTouchListener", "ACTION_CANCEL");
