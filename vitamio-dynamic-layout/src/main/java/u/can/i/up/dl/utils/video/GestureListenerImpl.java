@@ -7,9 +7,9 @@ import android.view.MotionEvent;
 /**
  * Created by lczgywzyy on 2014/12/19.
  */
-public class GestureListenerImpl  extends GestureDetector.SimpleOnGestureListener{
+public class GestureListenerImpl extends GestureDetector.SimpleOnGestureListener {
 
-    public GestureListenerImpl(){
+    public GestureListenerImpl() {
 
     }
 

@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/UMediaPlayer.iml" filepath="$PROJECT_DIR$/UMediaPlayer.iml" />
       <module fileurl="file://$PROJECT_DIR$/VitamioBundle.iml" filepath="$PROJECT_DIR$/VitamioBundle.iml" />
       <module fileurl="file://$PROJECT_DIR$/vitamio/vitamio.iml" filepath="$PROJECT_DIR$/vitamio/vitamio.iml" />
       <module fileurl="file://$PROJECT_DIR$/vitamio-dynamic-layout/vitamio-dynamic-layout.iml" filepath="$PROJECT_DIR$/vitamio-dynamic-layout/vitamio-dynamic-layout.iml" />

@@ -47,12 +47,17 @@ public class VideoUtils {
 
     private boolean mScrollScreenFlag = false;
 
+    private int currMoveMode = Variables.MODE_NONE;
+
     private Handler mDismissHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             Log.i("mDismissHandler", "hide view");
+            currMoveMode = Variables.MODE_NONE;
             if (mVideoView.isPlaying()) {
                 mControlView.setVisibility(View.GONE);
+            } else {
+                mControlView.setImageResource(R.drawable.video_play_1);
             }
             mProgressBar.setVisibility(View.GONE);
             mArrayView.setVisibility(View.GONE);
@@ -60,43 +65,52 @@ public class VideoUtils {
         }
     };
 
-    private VideoUtils(){}
+    private VideoUtils() {
+    }
 
-    /**@param
+    /**
+     * @param
      * @return mViewUtils的实例
-     * */
-    public static VideoUtils getInstance(){
+     */
+    public static VideoUtils getInstance() {
         return mViewUtils;
     }
-    /**@param
+
+    /**
+     * @param
      * @return mVideoView实例
-     * */
-    public VideoView getVideoView(){
+     */
+    public VideoView getVideoView() {
         return getInstance().mVideoView;
     }
 
-    /**@param
+    /**
+     * @param
      * @return mControlView
      * 返回ImageView类型的mControlView
-     * */
-    public ImageView getControlView(){
+     */
+    public ImageView getControlView() {
         return getInstance().mControlView;
     }
 
-    /**@return mScrollScreenFlag
+    /**
+     * @return mScrollScreenFlag
      * 判断是不是划屏操作；
      * 中间变量！
-     * */
-    public boolean isScrollScreen(){
+     */
+    public boolean isScrollScreen() {
         return mScrollScreenFlag;
     }
-    private void setScrollScreenFlag(boolean flag){
+
+    private void setScrollScreenFlag(boolean flag) {
         mScrollScreenFlag = flag;
     }
-    /**@param mLayout 在指定LinearLayout界面中生成动态布局
+
+    /**
+     * @param mLayout 在指定LinearLayout界面中生成动态布局
      * @deprecated
-     * */
-    private void createVideoView(LinearLayout mLayout){
+     */
+    private void createVideoView(LinearLayout mLayout) {
         if (!LibsChecker.checkVitamioLibs(mActivity))
             return;
         mLayout.setOrientation(LinearLayout.VERTICAL);
@@ -120,9 +134,10 @@ public class VideoUtils {
 //        mGestureDetector = new GestureDetector(mActivity, new GestureListenerImpl());
     }
 
-    /**@param mLayout 在指定RelativeLayout界面中生成动态布局
-     * */
-    private void createVideoView(RelativeLayout mLayout){
+    /**
+     * @param mLayout 在指定RelativeLayout界面中生成动态布局
+     */
+    private void createVideoView(RelativeLayout mLayout) {
         if (!LibsChecker.checkVitamioLibs(mActivity))
             return;
         ViewGroup.LayoutParams vlp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -146,14 +161,15 @@ public class VideoUtils {
 
     /*相关变量的初始化
     * */
-    private void baseInit(){
+    private void baseInit() {
         mVideoView.setOnTouchListener(new VideoViewTouchListener(mActivity));
         mControlView = createControlView();
         mProgressBar = createProcessBar();
         mArrayView = createArrowView();
         mTextView = createTextView();
     }
-    private ImageView createControlView(){
+
+    private ImageView createControlView() {
         ImageView controlView = new ImageView(mActivity);
         RelativeLayout.LayoutParams viewLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         viewLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -166,6 +182,7 @@ public class VideoUtils {
         Log.i("createControlView", "add image view : " + controlView.getId());
         return controlView;
     }
+
     private ProgressBar createProcessBar() {
         /** init progress bar */
         ProgressBar progressBar = new ProgressBar(mActivity, null, android.R.attr.progressBarStyleHorizontal);
@@ -184,6 +201,7 @@ public class VideoUtils {
         Log.i("createProcessBar", "add progress bar : " + progressBar.getId());
         return progressBar;
     }
+
     private ImageView createArrowView() {
         /** init control view */
         ImageView arrowView = new ImageView(mActivity);
@@ -202,6 +220,7 @@ public class VideoUtils {
         Log.i("createArrowView", "add arrow view : " + arrowView.getId());
         return arrowView;
     }
+
     private TextView createTextView() {
         /** init text view*/
         TextView textView = new TextView(mActivity);
@@ -222,7 +241,8 @@ public class VideoUtils {
         Log.i("createTextView", "add text view : " + textView.getId());
         return textView;
     }
-    private void updateVideoView(){
+
+    private void updateVideoView() {
         int videoHight = mVideoView.getVideoHeight();
         int videoWidth = mVideoView.getVideoWidth();
         DisplayMetrics metric = new DisplayMetrics();
@@ -230,7 +250,7 @@ public class VideoUtils {
         int screenHeight = metric.heightPixels;   // 屏幕高度（像素）
         int screenWidth = metric.widthPixels;     // 屏幕宽度（像素）
 
-        switch (mPlayType){
+        switch (mPlayType) {
             case Variables.VIDEO_NAIVE_WITH_CONTROLLER:
                 mVideoView.setMediaController(new MediaController(mActivity));
             case Variables.VIDEO_NAIVE_WITHOUT_CONTROLLER:
@@ -243,7 +263,7 @@ public class VideoUtils {
 //                Log.i("=====ScreenHeight======", "" + screenHeight);
 //                Log.i("=====ScreenWidth======", "" + screenWidth);
                 if (videoHight < screenHeight * videoWidth / screenWidth)
-                    mVideoView.setY((screenHeight - videoHight)/2);
+                    mVideoView.setY((screenHeight - videoHight) / 2);
 //                if (videoWidth < screenWidth * videoHight / screenHeight)
 //                    mVideoView.setX((screenWidth - videoWidth)/2);
                 break;
@@ -252,59 +272,65 @@ public class VideoUtils {
         }
     }
 
-    /**@param path 视频的本地路径
+    /**
+     * @param path 视频的本地路径
      * @see Variables;
-     * */
-    private void playVideo(String path){
+     */
+    private void playVideo(String path) {
         mVideoView.setVideoPath(path);
     }
 
-    /**@param tmpActivity 指定播放视频所在的界面
-     * @param mLayout 在指定界面中生成动态布局，播放时默认布局
-     * @param path 视频的本地路径
-     *
-     * 在指定页面中生成唯一动态布局，并且在该布局中播放视频
-     * */
-    public void playVideoInVideoView(Activity tmpActivity, LinearLayout mLayout, String path){
+    /**
+     * @param tmpActivity 指定播放视频所在的界面
+     * @param mLayout     在指定界面中生成动态布局，播放时默认布局
+     * @param path        视频的本地路径
+     *                    <p/>
+     *                    在指定页面中生成唯一动态布局，并且在该布局中播放视频
+     */
+    public void playVideoInVideoView(Activity tmpActivity, LinearLayout mLayout, String path) {
         playVideoInVideoView(tmpActivity, mLayout, path, Variables.VIDEO_NAIVE_WITH_CONTROLLER);
     }
 
-    /**@param tmpActivity 指定播放视频所在的界面
-     * @param ll 在指定界面中生成动态布局
-     * @param path 视频的本地路径
-     * @param playType 播放的形式，默认布局还是居中布局等等。
+    /**
+     * @param tmpActivity 指定播放视频所在的界面
+     * @param ll          在指定界面中生成动态布局
+     * @param path        视频的本地路径
+     * @param playType    播放的形式，默认布局还是居中布局等等。
      * @see Variables
-     *
+     * <p/>
      * 在指定页面中生成唯一动态布局，并且在该布局中播放视频
-     * */
-    public void playVideoInVideoView(Activity tmpActivity, LinearLayout ll, String path, int playType){
+     */
+    public void playVideoInVideoView(Activity tmpActivity, LinearLayout ll, String path, int playType) {
         mActivity = tmpActivity;
         mPlayType = playType;
         createVideoView(mLayout);
         playVideo(path);
     }
 
-    /**@param tmpActivity 指定播放视频所在的界面
-     * @param ml 在指定界面中生成动态布局
-     * @param path 视频的本地路径
-     * @param playType 播放的形式，默认布局还是居中布局等等。
+    /**
+     * @param tmpActivity 指定播放视频所在的界面
+     * @param ml          在指定界面中生成动态布局
+     * @param path        视频的本地路径
+     * @param playType    播放的形式，默认布局还是居中布局等等。
      * @see Variables
-     *
+     * <p/>
      * 在指定页面中生成唯一动态布局，并且在该布局中播放视频
-     * */
-    public void playVideoInVideoView(Activity tmpActivity, RelativeLayout ml, String path, int playType){
+     */
+    public void playVideoInVideoView(Activity tmpActivity, RelativeLayout ml, String path, int playType) {
         mActivity = tmpActivity;
         mPlayType = playType;
         mLayout = ml;
-        mAudioManager = (AudioManager)mActivity.getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = (AudioManager) mActivity.getSystemService(Context.AUDIO_SERVICE);
         mMaxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
 
         createVideoView(mLayout);
         playVideo(path);
     }
-    /** GestureListenerImpl实例的单击处理函数；
-     * */
-    public void SingleTapConfirmed(){
+
+    /**
+     * GestureListenerImpl实例的单击处理函数；
+     */
+    public void SingleTapConfirmed() {
         setScrollScreenFlag(false);
         mControlView.setImageResource(R.drawable.video_play_1);
         if (mVideoView.isPlaying()) {
@@ -317,17 +343,20 @@ public class VideoUtils {
         }
         Log.i("GestureListenerImpl", "onSingleTapConfirmed");
     }
-    /** GestureListenerImpl实例的滑动处理函数；
-     * */
-    public void Fling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY){
+
+    /**
+     * GestureListenerImpl实例的滑动处理函数；
+     */
+    public void Fling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         setScrollScreenFlag(true);
-        long addTime = 15000;
-        long deleteTime = 15000;
-        int mOldX = (int) e1.getX(), mOldY = (int) e1.getY();
-        int mNewX = (int) e2.getX(), mNewY = (int) e2.getY();
-        if (Math.abs(velocityX) > Math.abs(velocityY)) {
-            int windowWidth = mVideoView.getWidth();
-            if (mOldX < windowWidth * 3.5 / 5 && mOldX > windowWidth * 1.5 / 5) {
+        if (currMoveMode == Variables.MODE_PROGRESS) {
+            long addTime = 15000;
+            long deleteTime = 15000;
+            int mOldX = (int) e1.getX(), mOldY = (int) e1.getY();
+            int mNewX = (int) e2.getX(), mNewY = (int) e2.getY();
+            if (Math.abs(velocityX) > Math.abs(velocityY)) {
+                int windowWidth = mVideoView.getWidth();
+                //     if (mOldX < windowWidth * 3.5 / 5 && mOldX > windowWidth * 1.5 / 5) {
                 if (mNewX - mOldX > 0) {
                     mArrayView.setImageResource(R.drawable.arrow_1);
                     mArrayView.setVisibility(View.VISIBLE);
@@ -345,11 +374,15 @@ public class VideoUtils {
                 }
             }
 
+            //}
+            currMoveMode = Variables.MODE_NONE;
         }
         Log.i("Fling", "action : fling");
     }
-    /** GestureListenerImpl实例的消息处理函数；
-     * */
+
+    /**
+     * GestureListenerImpl实例的消息处理函数；
+     */
     public void endGesture() {
         Log.i("endGesture", "end gesture");
         mVolume = -1;
@@ -361,25 +394,30 @@ public class VideoUtils {
         //   seekVedioRequest = 0;
         setScrollScreenFlag(false);
     }
-    /** GestureListenerImpl实例的划屏处理函数；
-     * */
-    public void ScrollScreen(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY){
+
+    /**
+     * GestureListenerImpl实例的划屏处理函数；
+     */
+    public void ScrollScreen(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         setScrollScreenFlag(true);
         float mOldX = e1.getX(), mOldY = e1.getY();
         int mNewX = (int) e2.getX(), mNewY = (int) e2.getY();
         //   float rawDistanceX = mOldX - mNewX;
         float rawDistanceY = mOldY - mNewY;
-        int windowWidth = mVideoView.getWidth();
         int windowHeight = mVideoView.getHeight();
-        if (mOldX > windowWidth * 4.0 / 5) {// move at right
+        if (currMoveMode == Variables.MODE_VOLUME) {
+            //if (mOldX > windowWidth * 4.0 / 5) {// move at right
             //onVolumeSlide((distanceY) / screenHeight);
             VolumeSlide(distanceY > 0, (rawDistanceY) / windowHeight);
-        } else if (mOldX < windowWidth / 5.0) {// move at left
+        } else if (currMoveMode == Variables.MODE_BRIGHTNESS) {
+            //else if (mOldX < windowWidth / 5.0) {// move at left
             BrightnessSlide(distanceY > 0, (rawDistanceY) / windowHeight);
         }
     }
-    /** GestureListenerImpl实例的声音处理函数；
-     * */
+
+    /**
+     * GestureListenerImpl实例的声音处理函数；
+     */
     public void VolumeSlide(boolean isUp, float percent) {
         if ((isUp && percent > 0) || (!isUp && percent < 0)) {
             if (percent > 0) {
@@ -392,7 +430,7 @@ public class VideoUtils {
             mControlView.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.VISIBLE);
 
-            if (mVolume == -1) {
+            if (mVolume < 0) {
                 mVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
                 if (mVolume < 0)
                     mVolume = 0;
@@ -410,7 +448,8 @@ public class VideoUtils {
         }
     }
 
-    /** GestureListenerImpl实例的亮度处理函数；
+    /**
+     * GestureListenerImpl实例的亮度处理函数；
      *
      * @param isUp
      * @param percent
@@ -436,5 +475,17 @@ public class VideoUtils {
             mActivity.getWindow().setAttributes(lpa);
             mProgressBar.setProgress((int) (lpa.screenBrightness * 100));
         }
+    }
+
+    public void setCurrMoveMode(int newMoveMode) {
+        this.currMoveMode = newMoveMode;
+    }
+
+    public int getCurrMoveMode() {
+        return this.currMoveMode;
+    }
+
+    public float getVideoViewWidth() {
+        return this.mVideoView.getWidth();
     }
 }
