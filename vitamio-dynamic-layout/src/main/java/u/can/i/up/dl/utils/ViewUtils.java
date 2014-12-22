@@ -97,6 +97,7 @@ public class ViewUtils {
         mVideoView.setOnTouchListener(new VideoViewTouchListener(mActivity));
 //        mGestureDetector = new GestureDetector(mActivity, new GestureListenerImpl());
     }
+
     /**@param mLayout 在指定界面中生成动态布局
      * */
     private void createVideoView(RelativeLayout mLayout){
