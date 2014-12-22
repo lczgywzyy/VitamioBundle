@@ -1,12 +1,11 @@
 package u.can.i.up.dl;
 
+import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
@@ -16,15 +15,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
 import u.can.i.up.dl.utils.Variables;
+import u.can.i.up.dl.utils.picture.ImageUtil;
+import u.can.i.up.dl.utils.picture.UImageView;
 
-public class MyImageActivity extends ActionBarActivity {
+public class MyImageActivity extends Activity {
 
     private String path;
-    private ImageView myImagelView;
+    private UImageView myImagelView;
     private int childViewIdTag = 5;
     private GestureDetector mGestureDetector;
 
@@ -39,8 +37,8 @@ public class MyImageActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image_test_layout);
         myImagelView = addImagelView(Environment.getExternalStorageDirectory().getPath() + "/Pictures/1.jpg", R.id.image_test);
-        mGestureDetector = new GestureDetector(this, new ImageGestureListener());
-        myImagelView.setOnTouchListener(new ImageOnTouchListener());
+//        mGestureDetector = new GestureDetector(this, new ImageGestureListener());
+//        myImagelView.setOnTouchListener(new ImageOnTouchListener());
     }
 
 
@@ -72,16 +70,16 @@ public class MyImageActivity extends ActionBarActivity {
      * @param parentLayoutId
      * @return
      */
-    private ImageView addImagelView(String imagePath, int parentLayoutId) {
+    private UImageView addImagelView(String imagePath, int parentLayoutId) {
         path = imagePath;
-        Bitmap bitmap = getLoacalBitmap(imagePath);
-        ImageView imageView = new ImageView(this);
+        Bitmap bitmap = ImageUtil.getLoacalImageBitmap(imagePath);
+        UImageView imageView = new UImageView(this);
         imageView.setImageBitmap(bitmap);
         RelativeLayout.LayoutParams imageLayoutParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        imageLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-        imageLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        imageLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+//        imageLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+//        imageLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+//        imageLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
         imageView.setLayoutParams(imageLayoutParams);
         imageView.setId(childViewIdTag++);
         imageView.setScaleType(ImageView.ScaleType.MATRIX);
@@ -96,44 +94,9 @@ public class MyImageActivity extends ActionBarActivity {
 
     }
 
-    /**
-     * load local picture
-     *
-     * @param url
-     * @return
-     */
-    private static Bitmap getLoacalBitmap(String url) {
-        try {
-            FileInputStream fis = new FileInputStream(url);
-            return BitmapFactory.decodeStream(fis);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     private class ImageOnTouchListener implements View.OnTouchListener {
-
         @Override
         public boolean onTouch(View v, MotionEvent e) {
-            switch (e.getAction() & MotionEvent.ACTION_MASK) {
-                case MotionEvent.ACTION_DOWN:
-                    savedMatrix.set(matrix);
-                    myMode = Variables.MODE_DRAG;
-                    prev.set(e.getX(), e.getY());
-                    Log.i(Variables.TINYYARD_LOG_TAG, "down point : " + e.getX() + ":" + e.getY());
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    switch (myMode) {
-                        case Variables.MODE_DRAG:
-                            imageDrag(e);
-                            break;
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                    myMode = Variables.MODE_NONE;
-                    break;
-            }
             mGestureDetector.onTouchEvent(e);
             return true;
         }
@@ -141,48 +104,17 @@ public class MyImageActivity extends ActionBarActivity {
 
     private class ImageGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
-        public boolean onDoubleTap(MotionEvent e) {
-            RelativeLayout.LayoutParams imageLayoutParams = new RelativeLayout.LayoutParams(
-                    RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            imageLayoutParams.addRule(RelativeLayout.SYSTEM_UI_FLAG_FULLSCREEN);
-            imageLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-//            if (myImagelView.getScaleType() != ImageView.ScaleType.FIT_XY) {
-//                myImagelView.setScaleType(ImageView.ScaleType.FIT_XY);
-//            } else {
-//                myImagelView.setScaleType(ImageView.ScaleType.CENTER);
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+//            if(myMode == Variables.MODE_NONE) {
+//                if (myImagelView.getVisibility() != View.GONE) {
+//                    Log.i(Variables.TINYYARD_LOG_TAG, "picture gone");
+//                    myImagelView.setVisibility(View.GONE);
+//                } else {
+//                    Log.i(Variables.TINYYARD_LOG_TAG, "picture show");
+//                    myImagelView.setVisibility(View.VISIBLE);
+//                }
 //            }
             return true;
         }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if(myMode == Variables.MODE_NONE) {
-                if (myImagelView.getVisibility() != View.GONE) {
-                    Log.i(Variables.TINYYARD_LOG_TAG, "picture gone");
-                    myImagelView.setVisibility(View.GONE);
-                } else {
-                    Log.i(Variables.TINYYARD_LOG_TAG, "picture show");
-                    myImagelView.setVisibility(View.VISIBLE);
-                }
-            }
-            return true;
-        }
-
-
-    }
-
-    private boolean imageDrag(MotionEvent e) {
-        if (myImagelView == null) {
-            Log.e(Variables.TINYYARD_LOG_TAG, "null image view");
-            return false;
-        }
-        float mX = e.getX();
-        float mY = e.getY();
-        Log.i(Variables.TINYYARD_LOG_TAG, "down point2 : " + prev.x + ":" + prev.x);
-   //     Log.i(LOGTAG, "move point : " + e.getX() + ":" + e.getY());
-        matrix.set(savedMatrix);
-        matrix.postTranslate(e.getX() - prev.x, e.getY() - prev.y);
-        myImagelView.setImageMatrix(matrix);
-        return true;
     }
 }
