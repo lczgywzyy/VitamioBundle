@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import u.can.i.up.dl.utils.Variables;
@@ -34,12 +35,23 @@ public class UImageView extends ImageView {
 
     private int myMode = Variables.MODE_NONE;
 
-    private PointF prev = new PointF();
+    private PointF downPoint = new PointF();
     private PointF midPoint = new PointF();
     private float dist = 1f;
 
     private Matrix savedMatrix = new Matrix();
     private Matrix matrix = new Matrix();
+
+    private ViewGroup layout;
+    private int parentLayoutTop = -1;
+    private int parentLayoutBottom = -1;
+    private int parentLayoutLeft = -1;
+    private int parentLayoutRight = -1;
+
+    private int imageWidth = -1;
+    private int imageHeigh = -1;
+    private int savedImageWidth = -1;
+    private int savedImageHeigh = -1;
 
     public UImageView(Context context) {
         super(context);
@@ -69,9 +81,13 @@ public class UImageView extends ImageView {
         this.setImageBitmap(bitmap);
 
         //bitmap为空就不调用center函数
-//        if (bitmap != null) {
-//            center(true, true);
-//        }
+        if (bitmap != null) {
+           // center(true, true);
+            imageWidth = bitmap.getWidth();
+            imageHeigh = bitmap.getHeight();
+            Log.i(Variables.TINYYARD_LOG_TAG, "image width : " + imageWidth);
+            Log.i(Variables.TINYYARD_LOG_TAG, "image height : " + imageHeigh);
+        }
         this.setImageMatrix(matrix);
         this.setOnTouchListener(new PictureViewTouchListener());
 
@@ -82,17 +98,31 @@ public class UImageView extends ImageView {
 
         @Override
         public boolean onTouch(View v, MotionEvent e) {
+            if (parentLayoutBottom == -1) {
+                parentLayoutBottom = layout.getBottom();
+            }
+            if (parentLayoutTop == -1) {
+                parentLayoutTop = layout.getTop();
+            }
+            if (parentLayoutLeft == -1) {
+                parentLayoutLeft = layout.getLeft();
+
+            }
+            if (parentLayoutRight == -1) {
+                parentLayoutRight = layout.getRight();
+            }
             switch (e.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_DOWN:
                     savedMatrix.set(matrix);
                     myMode = Variables.MODE_DRAG;
-                    prev.set(e.getX(), e.getY());
-                    Log.i(Variables.TINYYARD_LOG_TAG, "down point : " + e.getX() + ":" + e.getY());
+                    downPoint.set(e.getX(), e.getY());
                     break;
                 case MotionEvent.ACTION_POINTER_DOWN:
                     dist = ImageUtil.spacing(e);
                     if (dist > 10f) {
                         savedMatrix.set(matrix);
+                        savedImageWidth = imageWidth;
+                        savedImageHeigh = imageHeigh;
                         midPoint = ImageUtil.getMidPoint(e);
                         myMode = Variables.MODE_ZOOM;
                     }
@@ -169,26 +199,66 @@ public class UImageView extends ImageView {
         matrix.postTranslate(deltaX, deltaY);
     }
 
-    private boolean imageDrag(MotionEvent e) {
-        //     Log.i(LOGTAG, "move point : " + e.getX() + ":" + e.getY());
+    private boolean imageDrag(MotionEvent upEvent) {
+        this.setScaleType(ScaleType.MATRIX);
         matrix.set(savedMatrix);
-        matrix.postTranslate(e.getX() - prev.x, e.getY() - prev.y);
+        float[] matrixValues = new float[9];
+        matrix.getValues(matrixValues);
+        float moveDistanceX = upEvent.getX() - downPoint.x;
+        float moveDistanceY = upEvent.getY() - downPoint.y;
+        // Log.i(Variables.TINYYARD_LOG_TAG, "aaaaaaaa : " + this.getMeasuredHeight());
+        if(this.imageWidth <= this.parentLayoutRight - this.parentLayoutLeft) {
+            if (moveDistanceX < 0 && matrixValues[2] + moveDistanceX < parentLayoutLeft) {//move left{
+                moveDistanceX = parentLayoutLeft - matrixValues[2];
+            } else if (moveDistanceX > 0 && matrixValues[2] + this.imageWidth + moveDistanceX > parentLayoutRight) {
+                moveDistanceX = parentLayoutRight - (matrixValues[2] + this.imageWidth);
+            }
+        }
+        if(this.imageHeigh <= this.parentLayoutBottom - this.parentLayoutTop) {
+            if (moveDistanceY < 0 && matrixValues[5] + moveDistanceY < parentLayoutTop) {
+                moveDistanceY = parentLayoutTop - matrixValues[5];
+            } else if (moveDistanceY > 0 && matrixValues[5] + this.imageHeigh + moveDistanceY > parentLayoutBottom) {
+                moveDistanceY = parentLayoutBottom - (matrixValues[5] + this.imageHeigh);
+            }
+        }
+
+        matrix.postTranslate(moveDistanceX, moveDistanceY);
         this.setImageMatrix(matrix);
         return true;
     }
 
     private boolean imageZoom(MotionEvent e) {
-        Log.i(Variables.TINYYARD_LOG_TAG, "image zoom");
+        this.setScaleType(ScaleType.MATRIX);
         if (e.getPointerCount() == 2) {
             float newDistance = ImageUtil.spacing(e);
             //    if (newDistance > 10f) {
             matrix.set(savedMatrix);
+            this.imageWidth = savedImageWidth;
+            this.imageHeigh = savedImageHeigh;
             float tScale = newDistance / dist;
-            Log.i(Variables.TINYYARD_LOG_TAG, "image zoom scale : " + tScale);
+            if (tScale < Variables.MIN_ZOOM_SCALE) {
+                tScale = Variables.MIN_ZOOM_SCALE;
+            } else if (tScale > Variables.MAX_ZOOM_SCALE) {
+                tScale = Variables.MAX_ZOOM_SCALE;
+            }
             matrix.postScale(tScale, tScale, midPoint.x, midPoint.y);
+            this.imageWidth *= tScale;
+            this.imageHeigh *= tScale;
             this.setImageMatrix(matrix);
         }
         //}
         return true;
+    }
+
+    public void setParentLayout(ViewGroup layout) {
+        this.layout = layout;
+    }
+
+    public void setImageWidth(int imageWidth) {
+        this.imageWidth = imageWidth;
+    }
+
+    public void setImageHeigh(int imageHeigh) {
+        this.imageHeigh = imageHeigh;
     }
 }

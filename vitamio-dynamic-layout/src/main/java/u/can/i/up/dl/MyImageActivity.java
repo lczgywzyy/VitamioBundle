@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -37,6 +38,7 @@ public class MyImageActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image_test_layout);
         myImagelView = addImagelView(Environment.getExternalStorageDirectory().getPath() + "/Pictures/1.jpg", R.id.image_test);
+
 //        mGestureDetector = new GestureDetector(this, new ImageGestureListener());
 //        myImagelView.setOnTouchListener(new ImageOnTouchListener());
     }
@@ -71,23 +73,34 @@ public class MyImageActivity extends Activity {
      * @return
      */
     private UImageView addImagelView(String imagePath, int parentLayoutId) {
-        path = imagePath;
-        Bitmap bitmap = ImageUtil.getLoacalImageBitmap(imagePath);
         UImageView imageView = new UImageView(this);
+        Bitmap bitmap = ImageUtil.getLoacalImageBitmap(imagePath);
         imageView.setImageBitmap(bitmap);
+        imageView.setImageWidth(bitmap.getWidth());
+        imageView.setImageHeigh(bitmap.getHeight());
         RelativeLayout.LayoutParams imageLayoutParams = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-//        imageLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-//        imageLayoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-//        imageLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL);
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        imageLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
         imageView.setLayoutParams(imageLayoutParams);
-        imageView.setId(childViewIdTag++);
-        imageView.setScaleType(ImageView.ScaleType.MATRIX);
+        //       imageView.setFitsSystemWindows(true);
+      //  imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
         RelativeLayout parentLayout = (RelativeLayout) findViewById(parentLayoutId);
         parentLayout.addView(imageView);
 
-        matrix.set(imageView.getMatrix());
+        imageView.setParentLayout(parentLayout);
+        //Log.i(Variables.TINYYARD_LOG_TAG, "bottom :" + parentLayout.getBottom());
+        // measureView(imageView);
+        //       DisplayMetrics dm = this.getResources().getDisplayMetrics();
+//        Log.i(Variables.TINYYARD_LOG_TAG, "screen height : " + dm.heightPixels);
+//        Log.i(Variables.TINYYARD_LOG_TAG, "height : " + imageView.getMeasuredHeight());
+        imageView.setId(childViewIdTag++);
+        path = imagePath;
+
+
+        //   imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        //   imageView.setImageMatrix(matrix);
+        //matrix.set(imageView.getMatrix());
         // imageView.setVisibility(View.GONE);
         Log.i(Variables.TINYYARD_LOG_TAG, "add image view : " + imageView.getId());
         return imageView;
