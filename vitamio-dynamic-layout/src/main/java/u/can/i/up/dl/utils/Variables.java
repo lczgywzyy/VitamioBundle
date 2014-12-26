@@ -24,6 +24,6 @@ public class Variables {
     public static final int VIDEO_CENTER_WITHOUT_CONTROLLER = 9;
 
     /** image view variables*/
-    public static final float MIN_ZOOM_SCALE = 0.1f;
-    public static final float MAX_ZOOM_SCALE = 15f;
+    public static final float MIN_ZOOM_SCALE = 0.5f;
+    public static final float MAX_ZOOM_SCALE = 5f;
 }

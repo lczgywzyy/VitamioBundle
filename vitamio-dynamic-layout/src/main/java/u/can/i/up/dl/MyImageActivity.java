@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import u.can.i.up.dl.utils.Variables;
@@ -37,7 +36,7 @@ public class MyImageActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.image_test_layout);
-        myImagelView = addImagelView(Environment.getExternalStorageDirectory().getPath() + "/Pictures/1.jpg", R.id.image_test);
+        myImagelView = addImagelView(Environment.getExternalStorageDirectory().getPath() + "/Pictures/2.jpeg", R.id.image_test);
 
 //        mGestureDetector = new GestureDetector(this, new ImageGestureListener());
 //        myImagelView.setOnTouchListener(new ImageOnTouchListener());
@@ -76,35 +75,38 @@ public class MyImageActivity extends Activity {
         UImageView imageView = new UImageView(this);
         Bitmap bitmap = ImageUtil.getLoacalImageBitmap(imagePath);
         imageView.setImageBitmap(bitmap);
-        imageView.setImageWidth(bitmap.getWidth());
-        imageView.setImageHeigh(bitmap.getHeight());
-        RelativeLayout.LayoutParams imageLayoutParams = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        imageLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-        imageView.setLayoutParams(imageLayoutParams);
-        //       imageView.setFitsSystemWindows(true);
-      //  imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+        if(bitmap != null) {
+            imageView.setImageWidth(bitmap.getWidth());
+            imageView.setImageHeight(bitmap.getHeight());
+            RelativeLayout.LayoutParams imageLayoutParams = new RelativeLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            //    imageLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+            imageView.setLayoutParams(imageLayoutParams);
+            //       imageView.setFitsSystemWindows(true);
+            //  imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
 
-        RelativeLayout parentLayout = (RelativeLayout) findViewById(parentLayoutId);
-        parentLayout.addView(imageView);
+            RelativeLayout parentLayout = (RelativeLayout) findViewById(parentLayoutId);
+            parentLayout.addView(imageView);
 
-        imageView.setParentLayout(parentLayout);
-        //Log.i(Variables.TINYYARD_LOG_TAG, "bottom :" + parentLayout.getBottom());
-        // measureView(imageView);
-        //       DisplayMetrics dm = this.getResources().getDisplayMetrics();
+            imageView.setParentLayout(parentLayout);
+            //Log.i(Variables.TINYYARD_LOG_TAG, "bottom :" + parentLayout.getBottom());
+            // measureView(imageView);
+            //       DisplayMetrics dm = this.getResources().getDisplayMetrics();
 //        Log.i(Variables.TINYYARD_LOG_TAG, "screen height : " + dm.heightPixels);
 //        Log.i(Variables.TINYYARD_LOG_TAG, "height : " + imageView.getMeasuredHeight());
-        imageView.setId(childViewIdTag++);
-        path = imagePath;
+            imageView.setId(childViewIdTag++);
+            path = imagePath;
 
 
-        //   imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        //   imageView.setImageMatrix(matrix);
-        //matrix.set(imageView.getMatrix());
-        // imageView.setVisibility(View.GONE);
-        Log.i(Variables.TINYYARD_LOG_TAG, "add image view : " + imageView.getId());
-        return imageView;
-
+            //   imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+            //   imageView.setImageMatrix(matrix);
+            //matrix.set(imageView.getMatrix());
+            // imageView.setVisibility(View.GONE);
+            Log.i(Variables.TINYYARD_LOG_TAG, "add image view : " + imageView.getId());
+        } else {
+            Log.w(Variables.TINYYARD_LOG_TAG, "can not show picture : " + path);
+        }
+            return imageView;
     }
 
     private class ImageOnTouchListener implements View.OnTouchListener {
