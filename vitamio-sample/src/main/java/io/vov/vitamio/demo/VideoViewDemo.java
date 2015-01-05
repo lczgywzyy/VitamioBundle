@@ -20,6 +20,7 @@ package io.vov.vitamio.demo;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -77,7 +78,7 @@ public class VideoViewDemo extends Activity {
 //	    if (!TextUtils.isEmpty(url)) {
 //	        mVideoView.setVideoPath(url);
 //	    }
-        path = "/sdcard/Movies/1.mp4";
+        path = (!TextUtils.isEmpty(url))? url :("/sdcard/Movies/1.mp4");
         mVideoView.setVideoPath(path);
     }
 	
