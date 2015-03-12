@@ -17,8 +17,10 @@
 package io.vov.vitamio.demo;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -53,6 +55,10 @@ public class MediaPlayerDemo extends Activity {
 		mlocalvideoSurface.setOnClickListener(mSetSurfaceVideoListener);
 		mstreamvideo = (Button) findViewById(R.id.streamvideo);
 		mstreamvideo.setOnClickListener(mStreamVideoListener);
+
+
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "DoNotDimScreen");
 	}
 
 	private OnClickListener mLocalAudioListener = new OnClickListener() {

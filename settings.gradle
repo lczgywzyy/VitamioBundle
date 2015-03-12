@@ -1,2 +1,2 @@
-include ':vitamio-sample',':vitamio-youku',':vitamio-dynamic-layout'
+include ':vitamio-sample',':vitamio-youku',':vitamio-dynamic-layout', ':vitamio-iptv-byr'
 include ':vitamio'

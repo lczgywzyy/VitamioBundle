@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/VitamioBundle.iml" filepath="$PROJECT_DIR$/VitamioBundle.iml" />
       <module fileurl="file://$PROJECT_DIR$/vitamio/vitamio.iml" filepath="$PROJECT_DIR$/vitamio/vitamio.iml" />
       <module fileurl="file://$PROJECT_DIR$/vitamio-dynamic-layout/vitamio-dynamic-layout.iml" filepath="$PROJECT_DIR$/vitamio-dynamic-layout/vitamio-dynamic-layout.iml" />
+      <module fileurl="file://$PROJECT_DIR$/vitamio-iptv-byr/vitamio-iptv-byr.iml" filepath="$PROJECT_DIR$/vitamio-iptv-byr/vitamio-iptv-byr.iml" />
       <module fileurl="file://$PROJECT_DIR$/vitamio-sample/vitamio-sample.iml" filepath="$PROJECT_DIR$/vitamio-sample/vitamio-sample.iml" />
       <module fileurl="file://$PROJECT_DIR$/vitamio-youku/vitamio-youku.iml" filepath="$PROJECT_DIR$/vitamio-youku/vitamio-youku.iml" />
     </modules>

@@ -24,6 +24,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import io.vov.vitamio.LibsChecker;
@@ -61,7 +63,13 @@ public class MediaPlayerDemo_Video extends Activity implements OnBufferingUpdate
 		super.onCreate(icicle);
 		if (!LibsChecker.checkVitamioLibs(this))
 			return;
-		setContentView(R.layout.mediaplayer_2);
+
+        //无title
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //全屏
+        getWindow().setFlags(WindowManager.LayoutParams. FLAG_FULLSCREEN, WindowManager.LayoutParams. FLAG_FULLSCREEN);
+
+        setContentView(R.layout.mediaplayer_2);
 		mPreview = (SurfaceView) findViewById(R.id.surface);
 		holder = mPreview.getHolder();
 		holder.addCallback(this);
@@ -96,7 +104,7 @@ public class MediaPlayerDemo_Video extends Activity implements OnBufferingUpdate
 				 * reasonably interleaved.
 				 * 
 				 */
-				path = "/sdcard/Movies/1.mp4";
+				path = "http://tv6.byr.cn/hls/cctv5hd.m3u8";
 				if (path == "") {
 					// Tell the user to provide a media file URL.
 					Toast.makeText(MediaPlayerDemo_Video.this, "Please edit MediaPlayerDemo_Video Activity," + " and set the path variable to your media file URL.", Toast.LENGTH_LONG).show();
