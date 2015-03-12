@@ -1,6 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        MyKeystore {
+            keyAlias 'UCanIUpExpert.keystore'
+            keyPassword 'lczgywzyy'
+            storeFile file('K:/UCanIUpExpert.keystore')
+            storePassword 'lczgywzyy'
+        }
+    }
+
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
 
@@ -10,11 +19,16 @@ android {
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+        signingConfig signingConfigs.MyKeystore
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.MyKeystore
+        }
+        debug {
+            signingConfig signingConfigs.MyKeystore
         }
     }
 }

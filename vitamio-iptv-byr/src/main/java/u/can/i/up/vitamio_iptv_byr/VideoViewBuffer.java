@@ -96,7 +96,7 @@ public class VideoViewBuffer extends Activity implements OnInfoListener, OnBuffe
             mVideoView.setVideoQuality(MediaPlayer.VIDEOQUALITY_HIGH);
             mVideoView.requestFocus();
             mVideoView.setOnInfoListener(this);
-            mVideoView.setBufferSize(4096);
+            mVideoView.setBufferSize(5120);
             mVideoView.setOnBufferingUpdateListener(this);
 
             mVideoView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
