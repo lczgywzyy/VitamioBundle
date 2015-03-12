@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/ctrl"
-    android:layout_width="fill_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:visibility="gone">
     <io.vov.vitamio.widget.CenterLayout
         android:id="@+id/cl"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true">
         <io.vov.vitamio.widget.VideoView
             android:id="@+id/vv"
             android:layout_width="wrap_content"

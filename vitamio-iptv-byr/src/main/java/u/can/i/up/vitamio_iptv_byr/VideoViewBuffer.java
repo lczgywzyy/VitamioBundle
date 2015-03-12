@@ -17,9 +17,13 @@
 package u.can.i.up.vitamio_iptv_byr;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.Display;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,12 +47,28 @@ public class VideoViewBuffer extends Activity implements OnInfoListener, OnBuffe
     private VideoView mVideoView;
     private ProgressBar pb;
     private TextView downloadRateView, loadRateView;
+    private Display currDisplay;
+    Handler handler=new Handler();
+    Runnable runnable=new Runnable(){
+        @Override
+        public void run() {
+            //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作
+            mVideoView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE);
+            handler.postDelayed(this, 2000);
+        }
+    };
 
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         if (!LibsChecker.checkVitamioLibs(this))
             return;
+        currDisplay = this.getWindowManager().getDefaultDisplay();
         setContentView(R.layout.videobuffer);
         mVideoView = (VideoView) findViewById(R.id.buffer);
         pb = (ProgressBar) findViewById(R.id.probar);
@@ -76,14 +96,41 @@ public class VideoViewBuffer extends Activity implements OnInfoListener, OnBuffe
             mVideoView.setVideoQuality(MediaPlayer.VIDEOQUALITY_HIGH);
             mVideoView.requestFocus();
             mVideoView.setOnInfoListener(this);
+            mVideoView.setBufferSize(4096);
             mVideoView.setOnBufferingUpdateListener(this);
+
+            mVideoView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE);
+
+            handler.postDelayed(runnable, 2000);
+
             mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
                     // optional need Vitamio 4.0
                     mediaPlayer.setPlaybackSpeed(1.0f);
+                    int vWidth = mediaPlayer.getVideoWidth();
+                    int vHeight = mediaPlayer.getVideoHeight();
+                    if (vWidth > currDisplay.getWidth() || vHeight > currDisplay.getHeight()){
+                        //如果video的宽或者高超出了当前屏幕的大小，则要进行缩放
+                        float wRatio = (float) vWidth / (float) currDisplay.getWidth();
+                        float hRatio = (float) vHeight / (float) currDisplay.getHeight();
+                        //选择大的一个进行缩放
+                        float ratio = Math.max(wRatio, hRatio);
+                        vWidth = (int) Math.ceil((float) vWidth / ratio);
+                        vHeight = (int) Math.ceil((float) vHeight / ratio);
+                        //设置surfaceView的布局参数
+                        mVideoView.setLayoutParams(new LinearLayout.LayoutParams(vWidth, vHeight));
+                        //然后开始播放视频
+                        mediaPlayer.start();
+                    }
                 }
             });
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
 
     }
@@ -120,4 +167,9 @@ public class VideoViewBuffer extends Activity implements OnInfoListener, OnBuffe
         loadRateView.setText(percent + "%");
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(runnable);
+    }
 }
