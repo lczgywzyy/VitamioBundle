@@ -47,7 +47,6 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
     private int ServerVersionCode = -1;
     private String ServerVersionName = "";
     private String ServerVersionInfo = "";
-    private static boolean isUpdate = false;
 
     private Handler mHandler = new Handler(){
         public void handleMessage(Message msg) {
@@ -81,7 +80,12 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
      * @return
      */
     private boolean isUpdate() {
-        return isUpdate;
+        if (getVersionCode(mContext) <  ServerVersionCode){
+            return true;
+        }else {
+            return false;
+        }
+
 //        // 获取当前软件版本
 //        int versionCode = getVersionCode(mContext);
 //        // 把version.xml放到网络上，然后获取文件信息
@@ -296,7 +300,7 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
             InputStream inputStream = urlConnection.getInputStream();
             XmlPullParser parser = Xml.newPullParser();
             parser.setInput(inputStream, "UTF-8");
-            int eventType = parser.getEventType();
+            int eventType;
             while((eventType = parser.getEventType()) != XmlPullParser.END_DOCUMENT)  {
                 switch (eventType){
                     case XmlPullParser.START_DOCUMENT: //开始读取XML文档
@@ -335,15 +339,6 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
     //onPostExecute方法用于在执行完后台任务后更新UI,显示结果
     @Override
     protected void onPostExecute(String result) {
-//        try {
-//            Thread.sleep(3000);
-//
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        if (getVersionCode(mContext) <  ServerVersionCode){
-            isUpdate = true;
-        }
         checkUpdate();
     }
 }
