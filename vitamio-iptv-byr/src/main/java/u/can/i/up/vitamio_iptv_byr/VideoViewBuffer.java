@@ -38,7 +38,6 @@ import io.vov.vitamio.widget.VideoView;
 public class VideoViewBuffer extends Activity implements OnInfoListener, OnBufferingUpdateListener {
 
     /**
-     * TODO: Set the path variable to a streaming video URL or a local media file
      * path.
      */
     //private String path = "http://tv6.byr.cn/hls/cctv5hd.m3u8";

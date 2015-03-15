@@ -38,6 +38,7 @@ public class ByrMainActivity extends ListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        (new UpdateManager(this)).execute();
 		if (!LibsChecker.checkVitamioLibs(this))
 			return;
 		setListAdapter(new SimpleAdapter(this, getData(), android.R.layout.simple_list_item_1, new String[] { "title" }, new int[] { android.R.id.text1 }));
