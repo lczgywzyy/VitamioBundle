@@ -22,7 +22,8 @@ public class NetworkManager extends AsyncTask<Integer, Integer, String> {
         @Override
         public void run() {
             //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作
-            android.os.Process.killProcess(android.os.Process.myPid());
+//            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(0);
         }
     };
 
