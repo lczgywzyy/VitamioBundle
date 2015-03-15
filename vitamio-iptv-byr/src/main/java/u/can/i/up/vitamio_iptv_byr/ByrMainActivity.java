@@ -16,8 +16,10 @@
 package u.can.i.up.vitamio_iptv_byr;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
@@ -35,9 +37,22 @@ import io.vov.vitamio.LibsChecker;
  */
 public class ByrMainActivity extends ListActivity {
 
+    private Context mContext;
+    Handler handler=new Handler();
+    Runnable runnable=new Runnable(){
+        @Override
+        public void run() {
+            //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作
+            (new NetworkManager(mContext)).execute();
+            handler.postDelayed(this, 10000);
+        }
+    };
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        mContext = this;
+        handler.postDelayed(runnable, 1000);
         (new UpdateManager(this)).execute();
 		if (!LibsChecker.checkVitamioLibs(this))
 			return;
@@ -158,5 +173,4 @@ public class ByrMainActivity extends ListActivity {
 
         startActivity(intent);
 	}
-
 }
