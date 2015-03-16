@@ -37,4 +37,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile project(':vitamio')
+    compile files('libs/YoumiSdk_v5.00_2015-01-08.jar')
 }

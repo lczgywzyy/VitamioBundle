@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 /**
  * Created by lczgywzyy on 2015/3/13.
@@ -294,7 +295,11 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
     protected String doInBackground(Integer... params) {
 //                pull的XML解析模式，但是HttpURLConnection不能出现在主线程中
         try {
-            Log.i("UCanIUp", "------------------------>");
+            if (!isInnerNetwork()){
+                serverip = "10.109.235.138";
+                updateApkURL(serverip);
+                updateVersionURL(serverip);
+            }
             URL url = new URL(versoinUrl);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             InputStream inputStream = urlConnection.getInputStream();
@@ -340,5 +345,29 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
     @Override
     protected void onPostExecute(String result) {
         checkUpdate();
+    }
+
+    private boolean isInnerNetwork(){
+        java.net.InetAddress x;
+        try {
+            x = java.net.InetAddress.getByName("softsec.isc");
+            String ip = x.getHostAddress();//得到字符串形式的ip地址
+            Log.i("UCanIUp", "ip:" + ip);
+            if ("192.168.1.10".equals(ip)){
+                return true;
+            } else{
+                return false;
+            }
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void updateApkURL(String si){
+        apkUrl = "http://" + si + "/UCanIUp/byrtv/update.apk";
+    }
+    private void updateVersionURL(String si){
+        versoinUrl = "http://" + si + "/UCanIUp/byrtv/version.xml";
     }
 }

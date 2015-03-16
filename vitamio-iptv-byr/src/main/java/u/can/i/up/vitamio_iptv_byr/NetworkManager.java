@@ -51,7 +51,7 @@ public class NetworkManager extends AsyncTask<Integer, Integer, String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        Log.i("UCanIUp", "" + isWIFI);
+//        Log.i("UCanIUp", "" + isWIFI);
         if (!isWIFI){
             Toast.makeText(mContext, "请使用WIFI观看视频...", Toast.LENGTH_SHORT).show();
             handler.postDelayed(runnable, 3000);

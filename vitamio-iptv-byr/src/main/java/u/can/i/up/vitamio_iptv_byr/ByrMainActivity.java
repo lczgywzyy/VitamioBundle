@@ -25,6 +25,9 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import net.youmi.android.AdManager;
+import net.youmi.android.spot.SpotManager;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,8 +55,12 @@ public class ByrMainActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         mContext = this;
+
+        AdManager.getInstance(mContext).init("4b0bdceb503f38f4", "e10fcd0732f59311", false);
+
         handler.postDelayed(runnable, 1000);
         (new UpdateManager(this)).execute();
+        (new MyAdsManager(this, SpotManager.ORIENTATION_PORTRAIT)).execute();
 		if (!LibsChecker.checkVitamioLibs(this))
 			return;
 		setListAdapter(new SimpleAdapter(this, getData(), android.R.layout.simple_list_item_1, new String[] { "title" }, new int[] { android.R.id.text1 }));
@@ -174,8 +181,23 @@ public class ByrMainActivity extends ListActivity {
         startActivity(intent);
 	}
 
+    public void onBackPressed() {
+        // 如果有需要，可以点击后退关闭插播广告。
+        if (!SpotManager.getInstance(this).disMiss()) {
+            // 弹出退出窗口，可以使用自定义退屏弹出和回退动画,参照demo,若不使用动画，传入-1
+            super.onBackPressed();
+        }
+    }
+    @Override
+
+    protected void onStop() {
+        // 如果不调用此方法，则按home键的时候会出现图标无法显示的情况。
+        SpotManager.getInstance(this).onStop();
+        super.onStop();
+    }
     @Override
     protected void onDestroy(){
+        SpotManager.getInstance(this).onDestroy();
         super.onDestroy();
         System.exit(0);
     }
