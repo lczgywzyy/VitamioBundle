@@ -61,8 +61,6 @@ public class ByrMainActivity extends ListActivity {
         handler.postDelayed(runnable, 1000);
         (new UpdateManager(this)).execute();
         (new MyAdsManager(this, SpotManager.ORIENTATION_PORTRAIT)).execute();
-		if (!LibsChecker.checkVitamioLibs(this))
-			return;
 		setListAdapter(new SimpleAdapter(this, getData(), android.R.layout.simple_list_item_1, new String[] { "title" }, new int[] { android.R.id.text1 }));
 	}
 

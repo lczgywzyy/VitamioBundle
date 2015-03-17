@@ -359,7 +359,7 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
                 return false;
             }
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
         }
         return false;
     }
