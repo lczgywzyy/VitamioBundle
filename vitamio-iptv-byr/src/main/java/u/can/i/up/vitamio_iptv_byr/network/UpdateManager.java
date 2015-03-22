@@ -1,4 +1,4 @@
-package u.can.i.up.vitamio_iptv_byr;
+package u.can.i.up.vitamio_iptv_byr.network;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -27,6 +27,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
+
+import u.can.i.up.vitamio_iptv_byr.R;
 
 /**
  * Created by lczgywzyy on 2015/3/13.
@@ -301,6 +303,7 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
                 updateVersionURL(serverip);
             }
             URL url = new URL(versoinUrl);
+//            Log.i("UCanIUp", versoinUrl);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             InputStream inputStream = urlConnection.getInputStream();
             XmlPullParser parser = Xml.newPullParser();
@@ -315,15 +318,15 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
                         //通过getName判断读到哪个标签，然后通过nextText()获取文本节点值，或通过getAttributeValue(i)获取属性节点值
                         if("VersionCode".equals(parser.getName())) {
                             ServerVersionCode = Integer.parseInt(parser.nextText().toString());
-                            Log.i("UCanIUp", "ServerVersionCode-->" + ServerVersionCode);
+//                            Log.i("UCanIUp", "ServerVersionCode-->" + ServerVersionCode);
                         }
                         if("VersionName".equals(parser.getName())) {
                             ServerVersionName = parser.nextText();
-                            Log.i("UCanIUp", "ServerVersionName-->" + ServerVersionName);
+//                            Log.i("UCanIUp", "ServerVersionName-->" + ServerVersionName);
                         }
                         if("VersionInfo".equals(parser.getName())) {
                             ServerVersionInfo = parser.nextText();
-                            Log.i("UCanIUp", "ServerVersionInfo-->" + ServerVersionInfo);
+//                            Log.i("UCanIUp", "ServerVersionInfo-->" + ServerVersionInfo);
                         }
                         break;
                     case XmlPullParser.END_TAG://读完一个Person，可以将其添加到集合类中
@@ -352,7 +355,7 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
         try {
             x = java.net.InetAddress.getByName("softsec.isc");
             String ip = x.getHostAddress();//得到字符串形式的ip地址
-            Log.i("UCanIUp", "ip:" + ip);
+//            Log.i("UCanIUp", "ip:" + ip);
             if ("192.168.1.10".equals(ip)){
                 return true;
             } else{

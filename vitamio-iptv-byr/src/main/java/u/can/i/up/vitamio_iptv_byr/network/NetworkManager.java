@@ -1,4 +1,4 @@
-package u.can.i.up.vitamio_iptv_byr;
+package u.can.i.up.vitamio_iptv_byr.network;
 
 import android.app.Activity;
 import android.content.Context;

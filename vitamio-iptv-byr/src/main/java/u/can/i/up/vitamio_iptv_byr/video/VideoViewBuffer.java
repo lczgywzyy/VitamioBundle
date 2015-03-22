@@ -14,17 +14,22 @@
  * limitations under the License.
  */
 
-package u.can.i.up.vitamio_iptv_byr;
+package u.can.i.up.vitamio_iptv_byr.video;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,8 +37,10 @@ import io.vov.vitamio.LibsChecker;
 import io.vov.vitamio.MediaPlayer;
 import io.vov.vitamio.MediaPlayer.OnBufferingUpdateListener;
 import io.vov.vitamio.MediaPlayer.OnInfoListener;
+import io.vov.vitamio.widget.CenterLayout;
 import io.vov.vitamio.widget.MediaController;
 import io.vov.vitamio.widget.VideoView;
+import u.can.i.up.vitamio_iptv_byr.R;
 
 public class VideoViewBuffer extends Activity implements OnInfoListener, OnBufferingUpdateListener {
 
@@ -47,6 +54,11 @@ public class VideoViewBuffer extends Activity implements OnInfoListener, OnBuffe
     private ProgressBar pb;
     private TextView downloadRateView, loadRateView;
     private Display currDisplay;
+    private Activity mActivity = null;
+    private ImageView mControlView;
+    private ProgressBar mProgressBar;
+    private CenterLayout mLayout;
+
     Handler handler=new Handler();
     Runnable runnable=new Runnable(){
         @Override
@@ -58,7 +70,9 @@ public class VideoViewBuffer extends Activity implements OnInfoListener, OnBuffe
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
                     | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                     | View.SYSTEM_UI_FLAG_IMMERSIVE);
-            handler.postDelayed(this, 2000);
+            mControlView.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.GONE);
+            handler.postDelayed(this, 3000);
         }
     };
 
@@ -69,6 +83,8 @@ public class VideoViewBuffer extends Activity implements OnInfoListener, OnBuffe
             return;
         currDisplay = this.getWindowManager().getDefaultDisplay();
         setContentView(R.layout.videobuffer);
+        mActivity = this;
+        mLayout = (CenterLayout) findViewById(R.id.video);
         mVideoView = (VideoView) findViewById(R.id.buffer);
         pb = (ProgressBar) findViewById(R.id.probar);
 
@@ -95,7 +111,7 @@ public class VideoViewBuffer extends Activity implements OnInfoListener, OnBuffe
             mVideoView.setVideoQuality(MediaPlayer.VIDEOQUALITY_HIGH);
             mVideoView.requestFocus();
             mVideoView.setOnInfoListener(this);
-            mVideoView.setBufferSize(5120);
+            mVideoView.setBufferSize(4096);
             mVideoView.setOnBufferingUpdateListener(this);
 
             mVideoView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -129,11 +145,52 @@ public class VideoViewBuffer extends Activity implements OnInfoListener, OnBuffe
                     }
                 }
             });
+            mControlView = createControlView();
+            mProgressBar = createProcessBar();
+            mVideoView.setOnTouchListener(new VideoViewTouchListener(this, mVideoView, mControlView, mProgressBar));
+
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
 
     }
+    private ImageView createControlView() {
+        ImageView controlView = new ImageView(mActivity);
+        RelativeLayout.LayoutParams viewLayoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        viewLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        viewLayoutParams.height = 200;
+        viewLayoutParams.width = 200;
+        controlView.setLayoutParams(viewLayoutParams);
+//        controlView.setId(childViewIdTag++);
+        mLayout.addView(controlView);
+        controlView.setVisibility(View.GONE);
+//        Log.i("createControlView", "add image view : " + controlView.getId());
+        return controlView;
+    }
 
+    private ProgressBar createProcessBar() {
+        /** init progress bar */
+        ProgressBar progressBar = new ProgressBar(mActivity, null, android.R.attr.progressBarStyleHorizontal);
+        RelativeLayout.LayoutParams barLayoutParams = new RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        barLayoutParams.addRule(RelativeLayout.BELOW, mControlView.getId());
+        barLayoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        //     barLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL, RelativeLayout.TRUE);
+        //     barLayoutParams.height = 200;
+        barLayoutParams.width = 400;
+        progressBar.setLayoutParams(barLayoutParams);
+
+        DisplayMetrics metric = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metric);
+        int height = metric.heightPixels;
+        progressBar.setY(160);
+
+//        progressBar.setId(childViewIdTag++);
+        mLayout.addView(progressBar);
+        //       videoLayout.bringChildToFront(imageView);
+        progressBar.setVisibility(View.GONE);
+//        Log.i("createProcessBar", "add progress bar : " + progressBar.getId());
+        return progressBar;
+    }
     @Override
     public boolean onInfo(MediaPlayer mp, int what, int extra) {
         switch (what) {

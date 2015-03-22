@@ -1,4 +1,4 @@
-package u.can.i.up.vitamio_iptv_byr;
+package u.can.i.up.vitamio_iptv_byr.ads;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -24,7 +24,6 @@ public class MyAdsManager extends AsyncTask<Integer, Integer, String> {
     }
     @Override
     protected String doInBackground(Integer... params) {
-        Log.i("UCanIUp", "-->Ads1111111111111");
         SpotManager.getInstance(mContext).loadSpotAds();
         SpotManager.getInstance(mContext).setSpotOrientation(adsORIENTATION);
         SpotManager.getInstance(mContext).setAnimationType(SpotManager.ANIM_ADVANCE);
