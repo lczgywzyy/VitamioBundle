@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -26,7 +28,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.UnknownHostException;
 
 import u.can.i.up.vitamio_iptv_byr.R;
 
@@ -83,7 +84,7 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
      * @return
      */
     private boolean isUpdate() {
-        Log.i("UCanIUp", "" + getVersionCode(mContext) + "|" + ServerVersionCode);
+//        Log.i("UCanIUp", "" + getVersionCode(mContext) + "|" + ServerVersionCode);
         if (getVersionCode(mContext) <  ServerVersionCode){
             return true;
         }else {
@@ -352,18 +353,26 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
     }
 
     private boolean isInnerNetwork(){
-        java.net.InetAddress x;
-        try {
-            x = java.net.InetAddress.getByName("softsec.isc");
-            String ip = x.getHostAddress();//得到字符串形式的ip地址
-//            Log.i("UCanIUp", "ip:" + ip);
-            if ("192.168.1.10".equals(ip)){
+//        java.net.InetAddress x;
+//        try {
+//            x = java.net.InetAddress.getByName("softsec.isc");
+//            String ip = x.getHostAddress();//得到字符串形式的ip地址
+//            if ("192.168.1.10".equals(ip)){
+//                return true;
+//            } else{
+//                return false;
+//            }
+//        } catch (UnknownHostException e) {
+//        }
+//        return false;
+        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
+        if (activeNetInfo != null && activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+            String wifiName = activeNetInfo.getExtraInfo().toString();
+            Log.i("UCanIUp", wifiName);
+            if (wifiName != null && !wifiName.isEmpty() && wifiName.contains("SoftSec")){
                 return true;
-            } else{
-                return false;
             }
-        } catch (UnknownHostException e) {
-//            e.printStackTrace();
         }
         return false;
     }
