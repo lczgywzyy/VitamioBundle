@@ -83,6 +83,7 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
      * @return
      */
     private boolean isUpdate() {
+        Log.i("UCanIUp", "" + getVersionCode(mContext) + "|" + ServerVersionCode);
         if (getVersionCode(mContext) <  ServerVersionCode){
             return true;
         }else {
