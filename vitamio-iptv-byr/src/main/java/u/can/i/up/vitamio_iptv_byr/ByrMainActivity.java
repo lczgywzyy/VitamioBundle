@@ -50,7 +50,7 @@ public class ByrMainActivity extends ListActivity {
     Runnable runnable=new Runnable(){
         @Override
         public void run() {
-            //要做的事情，这里再次调用此Runnable对象，以实现每两秒实现一次的定时器操作
+            //要做的事情，这里再次调用此Runnable对象，以实现每10秒实现一次的定时器操作
             (new NetworkManager(mContext)).execute();
             Ads_Count++;
             handler.postDelayed(this, 10000);
@@ -207,7 +207,8 @@ public class ByrMainActivity extends ListActivity {
     }
     @Override
     protected void onResume(){
-        if(Ads_Count >= 6){
+        //每10秒调用一次计时器，一分钟Ads_Count=6
+        if(Ads_Count >= 120){
             (new MyAdsManager(this, SpotManager.ORIENTATION_PORTRAIT)).execute();
             Ads_Count = 0;
         }
