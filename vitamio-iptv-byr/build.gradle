@@ -9,16 +9,14 @@ android {
             storePassword 'lczgywzyy'
         }
     }
-
     compileSdkVersion 21
-    buildToolsVersion "21.1.2"
-
+    buildToolsVersion '25.0.3'
     defaultConfig {
         applicationId "u.can.i.up.vitamio_iptv_byr"
         minSdkVersion 14
-        targetSdkVersion 21
-        versionCode 3
-        versionName "0.0.3"
+        targetSdkVersion 25
+        versionCode 4
+        versionName '0.0.4'
         signingConfig signingConfigs.MyKeystore
     }
     buildTypes {
@@ -31,10 +29,12 @@ android {
             signingConfig signingConfigs.MyKeystore
         }
     }
+    productFlavors {
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:21.0.3'
     compile project(':vitamio')
     compile files('libs/YoumiSdk_v5.00_2015-01-08.jar')
