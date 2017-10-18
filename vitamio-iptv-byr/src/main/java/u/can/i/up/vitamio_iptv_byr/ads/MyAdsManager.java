@@ -36,6 +36,6 @@ public class MyAdsManager extends AsyncTask<Integer, Integer, String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        SpotManager.getInstance(mContext).showSpotAds(mContext);
+//        SpotManager.getInstance(mContext).showSpotAds(mContext);
     }
 }

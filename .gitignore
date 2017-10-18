@@ -8,3 +8,6 @@
 gradle.properties
 *.iml
 */build/
+gradle/
+vitamio-iptv-byr/manifest-merger-release-report.txt
+*.apk

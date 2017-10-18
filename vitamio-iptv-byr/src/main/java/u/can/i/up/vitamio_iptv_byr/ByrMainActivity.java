@@ -15,13 +15,16 @@
  */
 package u.can.i.up.vitamio_iptv_byr;
 
+import android.Manifest;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -61,8 +64,30 @@ public class ByrMainActivity extends ListActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
-
         AdManager.getInstance(mContext).init("4b0bdceb503f38f4", "e10fcd0732f59311", false);
+
+        List<String> permissions = new ArrayList<>();
+        if (ContextCompat.checkSelfPermission(mContext,Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            } else {
+                permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
+        }
+        if (ContextCompat.checkSelfPermission(mContext,Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            } else {
+                permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+            }
+        }
+        if (ContextCompat.checkSelfPermission(mContext,Manifest.permission.READ_PHONE_STATE)!= PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_PHONE_STATE)) {
+            } else {
+                permissions.add(Manifest.permission.READ_PHONE_STATE);
+            }
+        }
+        if(permissions != null && !permissions.isEmpty()){
+            ActivityCompat.requestPermissions(this, permissions.toArray(new String[permissions.size()]),0);
+        }
 
         handler.postDelayed(runnable, 1000);
         (new UpdateManager(this)).execute();

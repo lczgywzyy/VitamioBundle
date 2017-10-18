@@ -10,8 +10,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.util.Xml;
 import android.view.LayoutInflater;
@@ -29,6 +31,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import u.can.i.up.vitamio_iptv_byr.BuildConfig;
 import u.can.i.up.vitamio_iptv_byr.R;
 
 /**
@@ -41,7 +44,9 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
     private ProgressBar mProgress;
     private int progress;
     private Thread downLoadThread;
-    private String serverip = "192.168.2.138";
+    private String softsec_ip = "192.168.100.40";
+    private String byr_ip = "10.109.235.2:10041";
+    private String serverip = softsec_ip;
     private String apkUrl = "http://" + serverip + "/UCanIUp/byrtv/update.apk";
     private String versoinUrl = "http://" + serverip + "/UCanIUp/byrtv/version.xml";
     private static final String savePath = "/sdcard/UCanIUp/";
@@ -289,10 +294,27 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
         if (!apkfile.exists()) {
             return;
         }
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File("/sdcard/UCanIUp/update.apk")), "application/vnd.android.package-archive");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
-        mContext.startActivity(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Uri apkUri = FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", apkfile);
+            Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+            intent.setData(apkUri);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            mContext.startActivity(intent);
+        } else {
+            Uri apkUri = Uri.fromFile(apkfile);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+        }
+//        File apkfile = new File(saveFileName);
+//        if (!apkfile.exists()) {
+//            return;
+//        }
+//        Intent intent = new Intent(Intent.ACTION_VIEW);
+//        intent.setDataAndType(Uri.fromFile(new File("/sdcard/UCanIUp/update.apk")), "application/vnd.android.package-archive");
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // without this flag android returned a intent error!
+//        mContext.startActivity(intent);
     }
 
     @Override
@@ -300,7 +322,7 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
 //                pull的XML解析模式，但是HttpURLConnection不能出现在主线程中
         try {
             if (!isInnerNetwork()){
-                serverip = "10.109.235.138";
+                serverip = byr_ip;
                 updateApkURL(serverip);
                 updateVersionURL(serverip);
             }
@@ -368,9 +390,9 @@ public class UpdateManager extends AsyncTask<Integer, Integer, String> {
         ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetInfo = connectivityManager.getActiveNetworkInfo();
         if (activeNetInfo != null && activeNetInfo.getType() == ConnectivityManager.TYPE_WIFI) {
-            String wifiName = activeNetInfo.getExtraInfo().toString();
+            String wifiName = activeNetInfo.getExtraInfo().toString().toLowerCase();
             Log.i("UCanIUp", wifiName);
-            if (wifiName != null && !wifiName.isEmpty() && wifiName.contains("SoftSec")){
+            if (wifiName != null && !wifiName.isEmpty() && wifiName.contains("softsec")){
                 return true;
             }
         }
